@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ListWantToRead = ({ wantToReadList }) => (
+const BookList = ({ bookList, title, changeShelf }) => (
   <div className="bookshelf">
-    <h2 className="bookshelf-title">Want to Read</h2>
+    <h2 className="bookshelf-title">{title}</h2>
     <div className="bookshelf-books">
       <ol className="books-grid">
-        {wantToReadList.map((book) => (
+        {bookList.map((book) => (
           <li key={book.id}>
             <div className="book">
               <div className="book-top">
                 <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
                 <div className="book-shelf-changer">
-                  <select>
-                    <option value="none" disabled>Move to...</option>
+                  <select onChange={(event) => changeShelf(book, event.target.value)} value="select">
+                    <option value="select" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
                     <option value="read">Read</option>
@@ -31,8 +31,10 @@ const ListWantToRead = ({ wantToReadList }) => (
   </div>
 );
 
-ListWantToRead.propTypes = {
-  wantToReadList: PropTypes.array.isRequired,
+BookList.propTypes = {
+  bookList: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  changeShelf: PropTypes.func.isRequired,
 };
 
-export default ListWantToRead;
+export default BookList;

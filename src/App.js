@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router-dom';
-import ListReading from './ListReading';
-import ListWantToRead from './ListWantToRead';
-import ListRead from './ListRead';
+import { Route, Link } from 'react-router-dom';
+import BookList from './BookList';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
 
@@ -14,30 +12,57 @@ class BooksApp extends Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    currentlyReadingList: [],
-    wantToReadList: [],
-    readList: [],
+    booksList: [],
     showSearchPage: false
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({
-        currentlyReadingList: books.filter((book) => book.shelf === "currentlyReading"),
-        wantToReadList: books.filter((book) => book.shelf === "wantToRead"),
-        readList: books.filter((book) => book.shelf === "read")
+        booksList: books
       });
     });
   }
 
+  changeShelf = (book, shelf) => {
+    console.log(book)
+    console.log(shelf)
+    BooksAPI.update(book, shelf).then(result => {
+      console.log(result)
+      // this.setState({
+      //   booksList: this.state.booksList.map(b => b.id === book.id ? Object.assign({}, b) : b)
+      // });
+    });
+  }
+
   render() {
-    const { currentlyReadingList, wantToReadList, readList} = this.state;
+    const { booksList} = this.state;
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        <Route exact path="/" render={() => (
+            <div className="list-books">
+              <div className="list-books-title">
+                <h1>MyReads</h1>
+              </div>
+              <div className="list-books-content">
+                <div>
+                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "currentlyReading")} title='Currently Reading'/>
+                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "wantToRead")} title='Want to Read'/>
+                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "read")} title='Read'/>
+                </div>
+              </div>
+              <div className="open-search">
+                <Link
+                  to="/search"
+                  className="open-search"
+                />
+              </div>
+            </div>
+        )}/>
+        <Route path="/search" render={({ history }) => (
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <Link className="close-search" to="/">Close</Link>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -55,23 +80,7 @@ class BooksApp extends Component {
               <ol className="books-grid"></ol>
             </div>
           </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <ListReading currentlyReadingList={currentlyReadingList}/>
-                <ListWantToRead wantToReadList={wantToReadList}/>
-                <ListRead readList={readList}/>
-              </div>
-            </div>
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-            </div>
-          </div>
-        )}
+        )}/>
       </div>
     )
   }
