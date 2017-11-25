@@ -12,7 +12,6 @@ class BooksApp extends Component {
     this.state = {
       booksList: [],
       searchList: [],
-      query: '',
     };
   }
 
@@ -32,8 +31,22 @@ class BooksApp extends Component {
     });
   }
 
+  updateSearch = (query) => {
+    let searchList = []
+    BooksAPI.search(query, 20).then(res => {
+      if(res.error) {
+        searchList = [];
+      } else {
+        searchList = res
+      }
+      this.setState({
+        searchList
+      });
+    });
+  }
+
   render() {
-    const { booksList} = this.state;
+    const { booksList, searchList, query } = this.state;
     return (
       <div className="app">
         <Route exact path="/" render={() => (
@@ -57,7 +70,7 @@ class BooksApp extends Component {
             </div>
         )}/>
         <Route path="/search" render={({ history }) => (
-          <SearchPage />
+          <SearchPage bookList={booksList} searchList={searchList} updateSearch={this.updateSearch}/>
         )}/>
       </div>
     )
