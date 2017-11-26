@@ -37,7 +37,7 @@ class BooksApp extends Component {
       if(res.error) {
         searchList = [];
       } else {
-        searchList = res
+        searchList = res;
       }
       this.setState({
         searchList
