@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class SearchPage extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   updateQuery = (event) => {
     const query = event;
@@ -15,7 +12,6 @@ class SearchPage extends Component {
   }
 
   render() {
-    console.log(this.props.searchList);
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -33,7 +29,9 @@ class SearchPage extends Component {
                   <div className="book-top">
                     <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
                     <div className="book-shelf-changer">
-                      <select>
+                      <select onChange={(event) => this.props.updateBooks(book, event.target.value)} value={
+                        this.props.bookList.some(b => {return b.id === book.id}) ? this.props.bookList.find(b => {return b.id === book.id}).shelf : 'select'
+                      }>
                         <option value="select" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
@@ -61,6 +59,7 @@ SearchPage.propTypes = {
   bookList: PropTypes.array.isRequired,
   searchList: PropTypes.array,
   updateSearch: PropTypes.func.isRequired,
+  updateBooks: PropTypes.func.isRequired,
 }
 
 export default SearchPage;

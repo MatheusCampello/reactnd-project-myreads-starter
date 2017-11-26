@@ -45,8 +45,25 @@ class BooksApp extends Component {
     });
   }
 
+  updateBooks = (book, shelf) => {
+    BooksAPI.update(book, shelf).then(result => {
+        let booksList = this.state.booksList;
+        const found = booksList.some(b => {
+          return book.id === b.id
+        });
+        if (!found) {
+          // Add the new book if he is not there
+          booksList.push(Object.assign({}, book, {shelf: shelf}));
+        } else {
+          // Change shelf of existing book
+          booksList = booksList.map(b => b.id === book.id ? Object.assign({}, b, {shelf: shelf}) : b);
+        }
+        this.setState({ booksList });
+    })
+  }
+
   render() {
-    const { booksList, searchList, query } = this.state;
+    const { booksList, searchList } = this.state;
     return (
       <div className="app">
         <Route exact path="/" render={() => (
@@ -70,7 +87,7 @@ class BooksApp extends Component {
             </div>
         )}/>
         <Route path="/search" render={({ history }) => (
-          <SearchPage bookList={booksList} searchList={searchList} updateSearch={this.updateSearch}/>
+          <SearchPage bookList={booksList} searchList={searchList} updateSearch={this.updateSearch} updateBooks={this.updateBooks}/>
         )}/>
       </div>
     )
