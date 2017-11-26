@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Route, Link } from 'react-router-dom';
-import BookList from './BookList';
-import SearchPage from './SearchPage';
+import { Route } from 'react-router-dom';
+import SearchPage from './components/SearchPage';
+import ListPage from './components/ListPage';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
 
@@ -67,24 +67,7 @@ class BooksApp extends Component {
     return (
       <div className="app">
         <Route exact path="/" render={() => (
-            <div className="list-books">
-              <div className="list-books-title">
-                <h1>MyReads</h1>
-              </div>
-              <div className="list-books-content">
-                <div>
-                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "currentlyReading")} title='Currently Reading'/>
-                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "wantToRead")} title='Want to Read'/>
-                  <BookList changeShelf={this.changeShelf} bookList={booksList.filter((book) => book.shelf === "read")} title='Read'/>
-                </div>
-              </div>
-              <div className="open-search">
-                <Link
-                  to="/search"
-                  className="open-search"
-                />
-              </div>
-            </div>
+          <ListPage changeShelf={this.changeShelf} booksList={booksList}/>
         )}/>
         <Route path="/search" render={({ history }) => (
           <SearchPage bookList={booksList} searchList={searchList} updateSearch={this.updateSearch} updateBooks={this.updateBooks}/>
