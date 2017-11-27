@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
+import { Debounce } from 'react-throttle';
 import PropTypes from 'prop-types';
 import Book from './Book'
 
@@ -8,7 +9,7 @@ class SearchPage extends Component {
   updateQuery = (event) => {
     const query = event;
     if(query.length >= 2){
-      this.props.updateSearch(query);
+      this.props.onUpdateSearch(query);
     }
   }
 
@@ -18,8 +19,9 @@ class SearchPage extends Component {
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
           <div className="search-books-input-wrapper">
-
-            <input type="text" placeholder="Search by title or author" onChange={(event) => this.updateQuery(event.target.value)}/>
+            <Debounce time="100" handler="onChange">
+              <input type="text" placeholder="Search by title or author" onChange={(event) => this.updateQuery(event.target.value)}/>
+            </Debounce>
           </div>
         </div>
         <div className="search-books-results">
@@ -28,7 +30,7 @@ class SearchPage extends Component {
               <li key={book.id}>
                 <Book
                   book={book}
-                  changeShelf={this.props.updateBooks}
+                  onChangeShelf={this.props.onUpdateBooks}
                   shelf={
                     this.props.bookList.some(b => {return b.id === book.id}) ? this.props.bookList.find(b => {return b.id === book.id}).shelf : 'select'
                   }
@@ -46,8 +48,8 @@ class SearchPage extends Component {
 SearchPage.propTypes = {
   bookList: PropTypes.array.isRequired,
   searchList: PropTypes.array,
-  updateSearch: PropTypes.func.isRequired,
-  updateBooks: PropTypes.func.isRequired,
+  onUpdateSearch: PropTypes.func.isRequired,
+  onUpdateBooks: PropTypes.func.isRequired,
 }
 
 export default SearchPage;

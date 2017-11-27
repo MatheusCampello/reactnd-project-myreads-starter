@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ListPage = ({ book, changeShelf, shelf }) => (
+const ListPage = ({ book, onChangeShelf, shelf }) => (
   <div className="book">
     <div className="book-top">
       <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
       <div className="book-shelf-changer">
-        <select onChange={(event) => changeShelf(book, event.target.value)} value={shelf}>
+        <select onChange={(event) => onChangeShelf(book, event.target.value)} value={shelf}>
           <option value="select" disabled>Move to...</option>
           <option value="currentlyReading">Currently Reading</option>
           <option value="wantToRead">Want to Read</option>
@@ -27,7 +27,7 @@ const ListPage = ({ book, changeShelf, shelf }) => (
 ListPage.propTypes = {
   book: PropTypes.object.isRequired,
   shelf: PropTypes.string.isRequired,
-  changeShelf: PropTypes.func.isRequired,
+  onChangeShelf: PropTypes.func.isRequired,
 };
 
 export default ListPage;
